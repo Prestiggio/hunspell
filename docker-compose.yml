@@ -1,0 +1,17 @@
+version: '3'
+name: 'madagasikara-soa'
+services:
+  hunspell:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hunspellmg
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    ports:
+      - 8090:3000
+      - 8091:80
+    working_dir: /var/www/html
+    volumes:
+      - ./www:/var/www/html
+    command: tail -F anything

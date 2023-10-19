@@ -1,0 +1,16 @@
+{
+  "name": "hunspell",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "yorn.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Landr Rakotoarivelo",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "moment": "^2.29.4"
+  }
+}
