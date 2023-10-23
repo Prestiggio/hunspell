@@ -6,6 +6,8 @@ import clsx from 'clsx'
 import { Providers } from '@/app/providers'
 import { Layout } from '@/components/Layout'
 
+import content from '@/content'
+
 import '@/styles/tailwind.css'
 
 const inter = Inter({
@@ -23,11 +25,10 @@ const lexend = localFont({
 
 export const metadata: Metadata = {
   title: {
-    template: '%s - Docs',
-    default: 'CacheAdvance - Never miss the cache again.',
+    template: '%s - Madagasikara soa',
+    default: 'Madagasikara soa - Sekoly online.',
   },
-  description:
-    'Cache every single thing your app could ever do ahead of time, so your code never even has to run at all.',
+  description: content.description,
 }
 
 export default function RootLayout({

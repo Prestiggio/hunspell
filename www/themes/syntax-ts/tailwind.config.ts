@@ -2,7 +2,7 @@ import typographyPlugin from '@tailwindcss/typography'
 import { type Config } from 'tailwindcss'
 
 export default {
-  content: ['./src/**/*.{js,jsx,ts,tsx,md}'],
+  content: ['./src/**/*.{js,jsx,ts,tsx,md}', '../../vendor/**/*.{js,jsx,ts,tsx,md}'],
   darkMode: 'class',
   theme: {
     fontSize: {

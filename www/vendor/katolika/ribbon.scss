@@ -1,0 +1,67 @@
+$theme-colors: (
+    "white": #fff
+);
+
+@each $color, $value in $theme-colors {
+    .ribbon-#{$color} {
+		background: $value;
+        background: linear-gradient(90deg, lighten($value, 20) 0%, transparentize($value, 0.7%) 10%, $value 90%, lighten($value, 20) 100%);
+        color: textcolor($value);
+
+        &:before,
+        &:after {
+            border: 1.5em solid darken($color: $value, $amount: 5);
+        }
+
+        .ribbon-content:before,
+        .ribbon-content:after {
+            border-color: darken($value, 10) transparent transparent transparent;
+        }
+	}
+}
+
+.ribbon {
+    text-align: center;
+    padding: 1em 2em; /* Adjust to suit */
+    bottom: 20px;
+
+    &:before,
+    &:after {
+        content: "";
+        position: absolute;
+        display: block;
+        bottom: -1em;
+        z-index: -1;
+    }
+    &:before {
+        left: -2em;
+        border-right-width: 1.5em;
+        border-left-color: transparent;
+        transform: rotate(-5deg);
+    }
+    &:after {
+        right: -2em;
+        border-left-width: 1.5em;
+        border-right-color: transparent;
+        transform: rotate(5deg);
+    }
+    .ribbon-content:before,
+    .ribbon-content:after {
+        content: "";
+        position: absolute;
+        display: block;
+        border-style: solid;
+        bottom: -1em;
+        z-index: -1;
+    }
+    .ribbon-content:before {
+        left: 0;
+        border-width: 1em 0 0 1em;
+        transform: rotate(-5deg);
+    }
+    .ribbon-content:after {
+        right: 0;
+        border-width: 1em 1em 0 0;
+        transform: rotate(5deg);
+    }
+}

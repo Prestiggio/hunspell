@@ -1,0 +1,177 @@
+# mg_MG.aff - affix file for myspell-mg
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+
+# ty vakina : https://www.chromium.org/developers/how-tos/editing-the-spell-checking-dictionaries
+# exemple : https://github.com/elastic/hunspell/blob/master/dicts/en_US/en_US.aff
+# ty complete tsara https://manpages.ubuntu.com/manpages/trusty/en/man4/hunspell.4.html
+#
+
+SET UTF-8
+
+TRY aeiuonrtldspjgkmhbcyfvwzqxSNRTLCGDMPHBEAUYOFIVKWZQJX
+
+REP 2
+REP ha a
+REP a ha
+
+#MAP
+
+KEY azertyuiop|qsdfghjklmù|wxcvbn|aéz|yèu|iço|oàp|aqz|zse|edr|rft|tgy|yhu|uji|iko|olpm|qws|sxd|dcf|fvg|gbh|hnj
+
+ICONV 42
+ICONV ’ '
+ICONV ʼ '
+ICONV ﬃ ffi
+ICONV ﬄ ffl
+ICONV ﬀ ff
+ICONV ﬅ ft
+ICONV ﬁ fi
+ICONV ﬂ fl
+ICONV ﬆ st
+ICONV ſ s
+ICONV à à
+ICONV â â
+ICONV ä ä
+ICONV é é
+ICONV è è
+ICONV ê ê
+ICONV ë ë
+ICONV î î
+ICONV ï ï
+ICONV ô ô
+ICONV ö ö
+ICONV ù ù
+ICONV û û
+ICONV ü ü
+ICONV ÿ ÿ
+ICONV ç ç
+ICONV À À
+ICONV Â Â
+ICONV Ä Ä
+ICONV É É
+ICONV È È
+ICONV Ê Ê
+ICONV Ë Ë
+ICONV Î Î
+ICONV Ï Ï
+ICONV Ô Ô
+ICONV Ö Ö
+ICONV Ù Ù
+ICONV Û Û
+ICONV Ü Ü
+ICONV Ÿ Ÿ
+ICONV Ç Ç
+
+OCONV 1
+OCONV ' ’
+
+
+
+FLAG long
+
+FULLSTRIP
+
+NEEDAFFIX ()
+
+FORBIDDENWORD {}
+
+CIRCUMFIX Xx
+
+KEEPCASE ||
+
+NOSUGGEST --
+
+BREAK 5
+BREAK -
+BREAK .
+BREAK ·
+BREAK ‘
+BREAK '
+
+
+
+SFX Zk Y 1
+SFX Zk 0 m [aeo]
+
+SFX Zj Y 1
+SFX Zj 0 n [aeo]
+
+SFX Zi Y 1
+SFX Zi 0 ko [aeo]
+
+SFX Zh Y 1
+SFX Zh 0 nao [aeo]
+
+SFX Zg Y 1
+SFX Zg 0 ny [aeo]
+
+SFX Zf Y 1
+SFX Zf 0 ntsika [aeo]
+
+SFX Ze Y 1
+SFX Ze 0 nay [aeo]
+
+SFX Zd Y 1
+SFX Zd 0 nareo [aeo]
+
+SFX Zs Y 1
+SFX Zs a 0 .
+
+SFX Zb Y 1
+SFX Zb ka 0 .
+
+SFX Za Y 1
+SFX Za ka ky .
+
+SFX Z9 Y 1
+SFX Z9 a o .
+
+SFX Z8 Y 1
+SFX Z8 a ao .
+
+SFX Z7 Y 1
+SFX Z7 ka ny .
+
+SFX Z6 Y 1
+SFX Z6 ka tsika .
+
+SFX Z5 Y 1
+SFX Z5 0 y .
+
+SFX Z4 Y 1
+SFX Z4 0 reo .
+
+PFX Yz Y 1
+PFX Yz 0 m [aeio]
+
+PFX Yy Y 1
+PFX Yy 0 n [aeio]
+
+PFX Yx Y 1
+PFX Yx 0 h [aeio]
+
+PFX Yw Y 1
+PFX Yw 0 h [aeio]
+
+SFX Yv Y 1
+SFX Yv ika eho .
+
+PFX Yw Y 1
+PFX Yw 0 h/Xx [aeio]
+
+SFX Yu Y 1
+SFX Yu ika eho/Xx .

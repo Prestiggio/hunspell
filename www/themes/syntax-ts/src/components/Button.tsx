@@ -3,7 +3,7 @@ import clsx from 'clsx'
 
 const variantStyles = {
   primary:
-    'rounded-full bg-sky-300 py-2 px-4 text-sm font-semibold text-slate-900 hover:bg-sky-200 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300/50 active:bg-sky-500',
+    'rounded-full bg-rose-400 py-2 px-4 text-sm font-semibold text-slate-900 hover:bg-rose-300 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-300/50 active:bg-rose-600',
   secondary:
     'rounded-full bg-slate-800 py-2 px-4 text-sm font-medium text-white hover:bg-slate-700 focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/50 active:text-slate-400',
 }

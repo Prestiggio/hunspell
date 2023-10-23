@@ -1,0 +1,124 @@
+# mg_MG.aff - affix file for myspell-mg
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+
+# ty vakina : https://www.chromium.org/developers/how-tos/editing-the-spell-checking-dictionaries
+# exemple : https://github.com/elastic/hunspell/blob/master/dicts/en_US/en_US.aff
+# ty complete tsara https://manpages.ubuntu.com/manpages/trusty/en/man4/hunspell.4.html
+#
+
+SET UTF-8
+
+TRY aeiuonrtldspjgkmhbcyfvwzqxSNRTLCGDMPHBEAUYOFIVKWZQJX
+
+REP 1
+REP ha a
+
+#MAP
+
+KEY azertyuiop|qsdfghjklmù|wxcvbn|aéz|yèu|iço|oàp|aqz|zse|edr|rft|tgy|yhu|uji|iko|olpm|qws|sxd|dcf|fvg|gbh|hnj
+
+ICONV 42
+ICONV ’ '
+ICONV ʼ '
+ICONV ﬃ ffi
+ICONV ﬄ ffl
+ICONV ﬀ ff
+ICONV ﬅ ft
+ICONV ﬁ fi
+ICONV ﬂ fl
+ICONV ﬆ st
+ICONV ſ s
+ICONV à à
+ICONV â â
+ICONV ä ä
+ICONV é é
+ICONV è è
+ICONV ê ê
+ICONV ë ë
+ICONV î î
+ICONV ï ï
+ICONV ô ô
+ICONV ö ö
+ICONV ù ù
+ICONV û û
+ICONV ü ü
+ICONV ÿ ÿ
+ICONV ç ç
+ICONV À À
+ICONV Â Â
+ICONV Ä Ä
+ICONV É É
+ICONV È È
+ICONV Ê Ê
+ICONV Ë Ë
+ICONV Î Î
+ICONV Ï Ï
+ICONV Ô Ô
+ICONV Ö Ö
+ICONV Ù Ù
+ICONV Û Û
+ICONV Ü Ü
+ICONV Ÿ Ÿ
+ICONV Ç Ç
+
+OCONV 1
+OCONV ' ’
+
+
+
+FLAG long
+
+FULLSTRIP
+
+NEEDAFFIX ()
+
+FORBIDDENWORD {}
+
+CIRCUMFIX Xx
+
+KEEPCASE ||
+
+NOSUGGEST --
+
+BREAK 5
+BREAK -
+BREAK .
+BREAK ·
+BREAK ‘
+BREAK '
+
+SFX K0 Y 12
+SFX K0 y iko y
+SFX K0 y inao y
+SFX K0 y iny y
+SFX K0 y intsika y
+SFX K0 y inay y
+SFX K0 y inareo y
+SFX K0 0 ko [aeo]
+SFX K0 0 inao [aeo]
+SFX K0 0 ny [aeo]
+SFX K0 0 ntsika [aeo]
+SFX K0 0 nay [aeo]
+SFX K0 0 nareo [aeo]
+
+SFX K1 Y 6
+SFX K1 a o a
+SFX K1 a ao a
+SFX K1 tra ny tra
+SFX K1 tra tsika tra
+SFX K1 0 y a
+SFX K1 0 reo a
