@@ -15,15 +15,10 @@ const CST = {
     GPES: {}
 }
 
-const getOrSaveSymbol = async function(id, affix, condition, type = 'CIRCUMFIX') {
+const getOrSaveSymbol = async function(affix) {
     const response = await fetch('/affix', {
         method: 'PUT',
-        body: JSON.stringify({
-            id,
-            affix,
-            condition,
-            type
-        })
+        body: JSON.stringify(affix)
     })
     const r = await response.text()
     return r
@@ -52,7 +47,7 @@ class AffixBlock extends Component
             case 'SFX':
                 return <div className='my-4 bg-slate-200'>
                     SFX {affix.code} N 1<br/>
-                    SFX {affix.code} {affix.suffixReplace} {affix.suffix} {affix.condition}
+                    SFX {affix.code} {affix.suffixReplace} {affix.suffix} {affix.suffixCondition}
                 </div>
             default:
                 return <>
@@ -62,7 +57,7 @@ class AffixBlock extends Component
                     </div>
                     <div className='my-4 bg-slate-200'>
                         SFX {affix.suffix_code} Y 1<br/>
-                        SFX {affix.suffix_code} {affix.suffixReplace} {affix.suffix}/Xx {affix.suffix_condition}
+                        SFX {affix.suffix_code} {affix.suffixReplace} {affix.suffix}/Xx {affix.suffixCondition}
                     </div>
                 </>
         }
@@ -80,9 +75,9 @@ class Family extends Component {
 
     removeAffix(affix) {
         this.setState(state=>{
-            state.affixes = state.affixes.filter(it=>it.id!==affix.id)
+            state.affixes = state.affixes.filter(it=>it.code!==affix.code)
             let gpes = []
-            state.affixes.map(it=>gpes.push(it.code))
+            state.affixes.filter(it=>it.type).map(it=>gpes.push(it.code))
             CST.GPES[this.props.term] = gpes
             return state
         }, ()=>{
@@ -111,7 +106,7 @@ class Family extends Component {
             </div>
             <table className='min-w-full divide-y divide-gray-300'>
                 <tbody className='bg-white'>
-                    {this.state.affixes.map(affix => <AffixItemRead remove={()=>this.removeAffix(affix)} affix={affix} term={this.props.term} key={affix.id} />)}
+                    {this.state.affixes.filter(it=>it.type).map(affix => <AffixItemRead remove={()=>this.removeAffix(affix)} affix={affix} term={this.props.term} key={affix.code} />)}
                 </tbody>
             </table>
         </li>
@@ -230,9 +225,11 @@ class AffixItemRead extends Component {
 class AffixItem extends Component {
     constructor(props) {
         super(props)
+        const reste = this.props.term.substr(parseInt(this.props.affix.prefixReplace)).substr(0, this.props.term.length - parseInt(this.props.affix.suffixReplace))
+        const result = this.props.affix.prefix + reste + this.props.affix.suffix
         this.state = {
-            reste: this.props.term,
-            result: this.props.term,
+            reste,
+            result,
             affix: this.props.affix
         }
         this.applyPrefix = this.applyPrefix.bind(this)
@@ -247,7 +244,7 @@ class AffixItem extends Component {
     applySuffixCondition(e) {
         const condition = e.target.value
         this.setState(state => {
-            state.affix.suffix_condition = condition
+            state.affix.suffixCondition = condition
             return state
         }, this.compileResult)
     }
@@ -296,16 +293,7 @@ class AffixItem extends Component {
         this.setState(async state => {
             state.reste = this.props.term.substr(parseInt(state.affix.prefixReplace)).substr(0, this.props.term.length - parseInt(state.affix.suffixReplace))
             state.result = state.affix.prefix + state.reste + state.affix.suffix
-            if(state.affix.type === 'CIRCUMFIX') {
-                state.affix.code = await getOrSaveSymbol(this.props.affix.id, state.affix.prefix, state.affix.condition, 'PFX')
-                state.affix.suffix_code = await getOrSaveSymbol(this.props.affix.id, state.affix.suffix, state.affix.suffix_condition, 'SFX')
-            }
-            else if (state.affix.type === 'PFX') {
-                state.affix.code = await getOrSaveSymbol(this.props.affix.id, state.affix.prefix, state.affix.condition, state.affix.type)
-            }
-            else if (state.affix.type === 'SFX') {
-                state.affix.code = await getOrSaveSymbol(this.props.affix.id, state.affix.suffix, state.affix.condition, state.affix.type)
-            }
+            state.affix.code = await getOrSaveSymbol(state.affix)
             return state
         }, () => {
             store.dispatch({
@@ -376,7 +364,7 @@ class AffixItem extends Component {
                         {this.state.reste}
                     </td>
                     <td>
-                        <input type='text' className='form-input w-24' value={this.state.affix.condition} placeholder='[aeio]]' onChange={this.applyCondition} />
+                        <input type='text' className='form-input w-24' value={this.state.affix.condition} placeholder='[aeio]' onChange={this.applySuffixCondition} />
                     </td>
                     <td>
                         <input type='text' className='form-input w-24' value={this.state.affix.suffix} placeholder='Suffixe' onChange={this.applySuffix} />
@@ -401,7 +389,7 @@ class AffixItem extends Component {
                         </button>
                     </td>
                     <td>
-                        <input type='text' className='form-input w-24' value={this.state.affix.condition} placeholder='[aeio]]' onChange={this.applyCondition} />
+                        <input type='text' className='form-input w-24' value={this.state.affix.condition} placeholder='[aeio]' onChange={this.applyCondition} />
                     </td>
                     <td>
                         <input type='text' className='form-input w-24' value={this.state.affix.prefix} placeholder='Prefixe' onChange={this.applyPrefix} />
@@ -413,7 +401,7 @@ class AffixItem extends Component {
                         {this.state.reste}
                     </td>
                     <td>
-                        <input type='text' className='form-input w-24' value={this.state.affix.suffix_condition} placeholder='[aeio]]' onChange={this.applySuffixCondition} />
+                        <input type='text' className='form-input w-24' value={this.state.affix.suffixCondition} placeholder='[aeio]' onChange={this.applySuffixCondition} />
                     </td>
                     <td>
                         <input type='text' className='form-input w-24' value={this.state.affix.suffix} placeholder='Suffixe' onChange={this.applySuffix} />
@@ -431,8 +419,6 @@ class AffixItem extends Component {
 }
 
 class Affixer extends Component {
-    #id = 0
-
     constructor(props) {
         super(props)
         this.state = {
@@ -442,7 +428,7 @@ class Affixer extends Component {
             regex: '',
             valid_regex: '',
             nsyllabus: 0,
-            affixes: [],
+            affixes: this.props.affixes,
             terms: this.props.terms
         }
         this.add = this.add.bind(this)
@@ -454,14 +440,14 @@ class Affixer extends Component {
     }
 
     paginate(f) {
-        const families = this.state.terms.filter(it => (new RegExp(this.state.valid_regex)).test(it)).filter(it => this.state.nsyllabus > 0 ? (new RegExp(`^([aeio].?){${this.state.nsyllabus}}$`)).test(it) : true)
+        const families = this.state.terms.filter(it => (new RegExp(this.state.valid_regex)).test(it.term)).filter(it => this.state.nsyllabus > 0 ? (new RegExp(`^([aeio].?){${this.state.nsyllabus}}$`)).test(it.term) : true)
         let terms = []
         let gpes = []
-        this.state.affixes.map(it=>gpes.push(it.code))
+        this.state.affixes.filter(it=>it.type).map(it=>gpes.push(it.code))
         families.map(m=>{
             terms.push({
-                term: m,
-                groups: (m in CST.GPES) ? CST.GPES[m] : gpes
+                term: m.term,
+                groups: (m.term in CST.GPES) ? CST.GPES[m.term] : gpes
             })
         })
         saveDic(terms)
@@ -482,45 +468,30 @@ class Affixer extends Component {
 
     removeAffix(affix) {
         this.setState(state => {
-            state.affixes = state.affixes.filter(it => it.id !== affix.id)
+            state.affixes = state.affixes.filter(it => it.code !== affix.code)
             return state
         })
     }
 
     remove(term) {
         this.setState(state => {
-            state.terms = state.terms.filter(it => it !== term)
+            const fterm = state.terms.find(it => it.term == term.term)
+            fterm.groups = []
+            CST.GPES[fterm.term] = []
+            state.tt++
             return state
         })
     }
 
     add(type = 'CIRCUMFIX') {
-        this.setState(state => {
-            if(type==='CIRCUMFIX') {
-                this.#id++
-                const id = this.#id
-                this.#id++
-                state.affixes.push({
-                    id,
-                    type,
-                    prefix: '',
-                    prefixReplace: 0,
-                    suffix: '',
-                    suffixReplace: 0
-                })
-            }
-            else {
-                this.#id++
-                const id = this.#id
-                state.affixes.push({
-                    id,
-                    type,
-                    prefix: '',
-                    prefixReplace: 0,
-                    suffix: '',
-                    suffixReplace: 0
-                })
-            }
+        const available = this.state.affixes.find(it=>!it.type)
+        this.setState((state) => {
+            const av = state.affixes.find(it=>it.code === available.code)
+            av.type = type
+            av.prefixReplace = 0
+            av.suffixReplace = 0
+            av.prefix = ''
+            av.suffix = ''
             return state
         })
     }
@@ -553,13 +524,13 @@ class Affixer extends Component {
             }
             if (storeState.type === 'single_affix_updated') {
                 let terms = []
-                const families = this.state.terms.filter(it => (new RegExp(this.state.valid_regex)).test(it)).filter(it => this.state.nsyllabus > 0 ? (new RegExp(`^([aeio].?){${this.state.nsyllabus}}$`)).test(it) : true)
+                const families = this.state.terms.filter(it => (new RegExp(this.state.valid_regex)).test(it.term)).filter(it => this.state.nsyllabus > 0 ? (new RegExp(`^([aeio].?){${this.state.nsyllabus}}$`)).test(it.term) : true)
                 let gpes = []
-                this.state.affixes.map(it=>gpes.push(it.code))
+                this.state.affixes.filter(it=>it.type).map(it=>gpes.push(it.code))
                 families.map(m=>{
                     terms.push({
-                        term: m,
-                        groups: (m in CST.GPES) ? CST.GPES[m] : gpes
+                        term: m.term,
+                        groups: (m.term in CST.GPES) ? CST.GPES[m.term] : gpes
                     })
                 })
                 saveDic(terms)
@@ -572,10 +543,10 @@ class Affixer extends Component {
     }
 
     render() {
-        const families = this.state.terms.filter(it => (new RegExp(this.state.valid_regex)).test(it)).filter(it => this.state.nsyllabus > 0 ? (new RegExp(`^([aeio].?){${this.state.nsyllabus}}$`)).test(it) : true)
+        const families = this.state.terms.filter(it => it.term.length > 0 && (new RegExp(this.state.valid_regex)).test(it.term)).filter(it => this.state.nsyllabus > 0 ? (new RegExp(`^([aeio].?){${this.state.nsyllabus}}$`)).test(it.term) : true)
         const m = families[this.state.index]
         let gpes = []
-        this.state.affixes.map(it=>gpes.push(it.code))
+        this.state.affixes.filter(it=>it.type).map(it=>gpes.push(it.code))
         return <>
             <input type='text' className='form-input' value={this.state.regex} placeholder='regex' onChange={this.applyRegex} />
             <input type='text' className='form-input' value={this.state.syllabus} placeholder='syllabe' onChange={this.applySyllabus} />
@@ -594,7 +565,7 @@ class Affixer extends Component {
                     </tr>
                 </thead>
                 <tbody className='bg-white'>
-                    {this.state.affixes.map(affix => <AffixItem remove={() => this.removeAffix(affix)} affix={affix} term={this.props.term} key={affix.id} />)}
+                    {this.state.affixes.filter(it=>it.type).map(affix => <AffixItem remove={() => this.removeAffix(affix)} affix={affix} term={this.props.term} key={affix.code} />)}
                 </tbody>
             </table>
             <div>
@@ -618,10 +589,10 @@ class Affixer extends Component {
                 </nav>
             </div>
             {this.state.valid_regex && m && <ul role="list" className="divide-y divide-gray-100 my-4">
-                <Family key={`${m}-${this.state.t}`} remove={() => this.remove(m)} term={m} affixes={this.state.affixes} />
+                <Family key={`${m.term}-${this.state.t}`} remove={() => this.remove(m)} term={m.term} affixes={this.state.affixes} />
             </ul>}
-            {families.map(m=><div key={`${m}-${this.state.tt}`}>{m}/{(m in CST.GPES) ? CST.GPES[m].join('') : gpes.join('')}</div>)}
-            {this.state.affixes.map(affix => <AffixBlock key={affix.id} affix={affix}/>)}
+            {families.map(m=><div key={`${m.term}-${this.state.tt}`}>{m.term}/{(m.term in CST.GPES) ? CST.GPES[m.term].join('') : [...gpes, ...m.groups].join('')}</div>)}
+            {this.state.affixes.filter(it=>it.type).map(affix => <AffixBlock key={affix.code} affix={affix}/>)}
         </>
     }
 }

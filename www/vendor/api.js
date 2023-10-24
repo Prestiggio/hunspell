@@ -1,8 +1,10 @@
 import https from 'https';
 import fs from 'fs';
-import moment from 'moment';
 import { exec } from 'child_process';
-import 'dotenv/config';
+
+require("dotenv").config();
+
+const moment = require("moment");
 
 export const execShellCommand = async (cmd)=>{
     return new Promise((resolve, reject) => {

@@ -5,12 +5,15 @@ import { PrevNextLinks } from '@/components/PrevNextLinks'
 import { execShellCommand } from '@/api'
 import { ChevronRightIcon } from '@heroicons/react/20/solid'
 
-import trans from "@/Core/translations";
+import trans from "@/Core/next-translations";
 import fs from 'fs';
 import Link from 'next/link'
 
 export default async function page({ searchParams }) {
     let serials: any[] = []
+    const fototeny = fs.readFileSync('/var/www/html/vendor/hunspell/mg_MG.dic')
+    const ar = fototeny.toString().split('\n')
+    const n = ar.shift()
     if(!fs.existsSync('/var/www/html/vendor/hunspell/serials.json')) {
         let codes = []
         let alphas = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('')
@@ -30,16 +33,20 @@ export default async function page({ searchParams }) {
             })
         }
         fs.writeFileSync('/var/www/html/vendor/hunspell/serials.json', JSON.stringify(serials))
+        let terms: any[] = []
+        ar.map(a=>{
+            terms.push({
+                term: a,
+                groups: []
+            })
+        })
+        fs.writeFileSync('/var/www/html/vendor/hunspell/terms.json', JSON.stringify(terms))
     }
     else {
         const serialcontent = fs.readFileSync('/var/www/html/vendor/hunspell/serials.json')
         serials = JSON.parse(serialcontent.toString())
     }
-
     const result = await execShellCommand('wordforms mg_MG3.aff mg_MG3.dic ' + searchParams.term)
-    const fototeny = fs.readFileSync('/var/www/html/vendor/hunspell/mg_MG.dic')
-    const ar = fototeny.toString().split('\n')
-    const n = ar.shift()
     return <>
         <div className="min-w-0 max-w-2xl flex-auto px-4 py-16 lg:max-w-none lg:pl-8 lg:pr-0 xl:px-16">
             <article>

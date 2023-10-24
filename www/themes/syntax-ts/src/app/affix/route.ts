@@ -1,48 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import fs from 'fs';
 
-const getSymbol = async function(id: number, affix: string, condition: string, type: string = 'CIRCUMFIX') {
+const updateSymbol = async function(affix: any) {
     const serialcontent = fs.readFileSync('/var/www/html/vendor/hunspell/serials.json')
     const serials = JSON.parse(serialcontent.toString())
-    return serials.find((it: any)=>it.id == id || (it.condition == condition && it.affix == affix && it.type == type))
-}
-
-const saveSymbol = async function(id: number, affix: string, condition: string, type: string = 'CIRCUMFIX') {
-    const serialcontent = fs.readFileSync('/var/www/html/vendor/hunspell/serials.json')
-    const serials = JSON.parse(serialcontent.toString())
-    const available = serials.find((it: any)=>!it.condition && !it.affix && !it.type && !it.id)
-    available.id = id
-    available.affix = affix
-    available.condition = condition
-    available.type = type
-    fs.writeFileSync('/var/www/html/vendor/hunspell/serials.json', JSON.stringify(serials))
-    return available
-}
-
-const updateSymbol = async function(id: number, affix: string, condition: string, type: string = 'CIRCUMFIX') {
-    const serialcontent = fs.readFileSync('/var/www/html/vendor/hunspell/serials.json')
-    const serials = JSON.parse(serialcontent.toString())
-    const symbol = serials.find((it: any)=>it.id == id)
-    symbol.affix = affix
-    symbol.condition = condition
-    symbol.type = type
+    const symbol = serials.find((it: any)=>it.code == affix.code)
+    symbol.code = affix.code
+    symbol.prefix = affix.prefix
+    symbol.suffix = affix.suffix
+    symbol.prefixReplace = affix.prefixReplace
+    symbol.suffixCode = affix.suffixCode
+    symbol.suffixReplace = affix.suffixReplace
+    symbol.condition = affix.condition
+    symbol.suffixCondition = affix.suffixCondition
+    symbol.type = affix.type
+    symbol.suffixReplace = affix.suffixReplace
     fs.writeFileSync('/var/www/html/vendor/hunspell/serials.json', JSON.stringify(serials))
     return symbol
 }
 
-const getOrSaveSymbol = async function(id: number, affix: string, condition: string, type: string = 'CIRCUMFIX') {
-    let symbol = await getSymbol(id, affix, condition, type)
-    if(!symbol) {
-        symbol = await saveSymbol(id, affix, condition, type)
-    }
-    else {
-        await updateSymbol(id, affix, condition, type)
-    }
-    return symbol
+const getOrSaveSymbol = async function(affix: any) {
+    await updateSymbol(affix)
 }
 
 export async function PUT(request: NextRequest) {
     const json = await request.json()
-    const symbol = await getOrSaveSymbol(json.id, json.affix, json.condition, json.type)
-    return new NextResponse(symbol.code)
+    await getOrSaveSymbol(json)
+    return new NextResponse(json.code)
 }

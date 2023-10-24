@@ -69,7 +69,7 @@ moment.locale('fr', {
     // In case the meridiem units are not separated around 12, then implement
     // this function (look at locale/id.js for an example).
     // meridiemHour : function (hour, meridiem) {
-    //     return /* 0-23 hour, given meridiem token and hour 1-12 */ ;
+    //     return //0-23 hour, given meridiem token and hour 1-12 ;
     // },
     meridiem : function (hours, minutes, isLower) {
         return hours < 12 ? 'PD' : 'MD';
