@@ -9,7 +9,7 @@ import trans from "@/Core/next-translations";
 import fs from 'fs';
 import Link from 'next/link'
 
-export default async function page({ searchParams }) {
+export default async function page({ searchParams }:any) {
     let serials: any[] = []
     const fototeny = fs.readFileSync('/var/www/html/vendor/hunspell/mg_MG.dic')
     const ar = fototeny.toString().split('\n')
@@ -52,6 +52,7 @@ export default async function page({ searchParams }) {
             <article>
                 <DocsHeader title={trans('Getting start')} />
                 <h1>{n} : {ar.filter(it => it.length > 0).length}</h1>
+                
                 <ul role="list" className="divide-y divide-gray-100">
                     {ar.filter(it => it.length > 0).map((a) => (
                         <li key={a} className="relative flex justify-between items-center hover:bg-gray-50">

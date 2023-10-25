@@ -11,6 +11,7 @@ services:
     ports:
       - 8090:3000
       - 8091:80
+      - 8092:8080
     working_dir: /var/www/html/themes/syntax-ts
     volumes:
       - ./www:/var/www/html

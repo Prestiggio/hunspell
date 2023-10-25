@@ -3,6 +3,7 @@
 import React, { Component } from 'react'
 import { XCircleIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
+import { useRouter } from "next/router"
 
 const getOrSaveSymbol = async function(affix) {
     const response = await fetch('/affix', {
@@ -98,6 +99,7 @@ class AffixItem extends Component {
                 <input
                     type="checkbox"
                     className="h-4 w-4 rounded border-gray-300 text-rose-600 focus:ring-rose-600"
+                    onChange={this.props.onChange}
                 />
             </td>
             <td>
@@ -135,17 +137,52 @@ class AffixItem extends Component {
 
 class Form extends Component
 {
+    #form = React.createRef()
+
     constructor(props) {
         super(props)
         this.state = {
             t: 0,
             regex: '',
             valid_regex: '',
-            affixes: this.props.affixes
+            affixes: this.props.affixes,
+            selected: []
         }
         this.applyRegex = this.applyRegex.bind(this)
         this.applySyllabus = this.applySyllabus.bind(this)
         this.add = this.add.bind(this)
+        this.handleCheck = this.handleCheck.bind(this)
+        this.selectTerms = this.selectTerms.bind(this)
+        this.resetTerms = this.resetTerms.bind(this)
+    }
+
+    async resetTerms() {
+        const response = await fetch('/dic', {
+            method: 'DELETE'
+        })
+        const result = await response.text()
+        alert(result)
+    }
+
+    handleCheck(e, affix) {
+        const checked = e.target.checked
+        let selected = this.state.selected
+        if(checked) {
+            selected.push(affix)
+        }
+        else {
+            selected = selected.filter(it=>it.code!=affix.code)
+        }
+        this.setState({selected})
+    }
+
+    async selectTerms() {
+        const response = await fetch('/session', {
+            method: 'POST',
+            body: JSON.stringify(this.state.selected)
+        })
+        const session = await response.text()
+        document.location.href = '/group/' + session
     }
 
     applyRegex(e) {
@@ -185,9 +222,11 @@ class Form extends Component
             <input type='text' className='form-input' value={this.state.regex} placeholder='regex' onChange={this.applyRegex} />
             <input type='text' className='form-input' value={this.state.syllabus} placeholder='syllabe' onChange={this.applySyllabus} />
             <button type='button' className='btn' onClick={() => this.add('PFX')}>Ajouter PFX</button>
+            <button type='button' className='btn' onClick={this.resetTerms}>Réinitialiser les termes</button>
+            <button type='button' className='btn' onClick={this.selectTerms}>Termes</button>
             <table className='min-w-full divide-y divide-gray-300 my-4'>
                 <tbody className='bg-white'>
-                    {this.state.affixes.filter(it=>it.type).map(affix => <AffixItem affix={affix} term={this.props.terms.filter(it => this.state.nsyllabus > 0 ? (new RegExp(`^([aeio].?){${this.state.nsyllabus}}$`)).test(it.term) : true).find(it=>(new RegExp(this.state.valid_regex)).test(it.term))} key={`${affix.code}-${this.state.t}`} />)}
+                    {this.state.affixes.filter(it=>it.type).map(affix => <AffixItem onChange={e=>this.handleCheck(e, affix)} affix={affix} term={this.props.terms.filter(it => this.state.nsyllabus > 0 ? (new RegExp(`^([aeio].?){${this.state.nsyllabus}}$`)).test(it.term) : true).find(it=>(new RegExp(this.state.valid_regex)).test(it.term))} key={`${affix.code}-${this.state.t}`} />)}
                 </tbody>
             </table>
             {this.state.affixes.filter(it=>it.type).map(affix => <AffixBlock key={affix.code} affix={affix}/>)}
